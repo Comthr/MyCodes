@@ -1,7 +1,7 @@
-﻿namespace Sort
+﻿using System;
+using System.Collections.Generic;
+namespace Sort
 {
-    using System;
-    using System.Collections.Generic;
     internal class MySorter<T> where T : IComparable
     {
         static void Main(string[] args)
