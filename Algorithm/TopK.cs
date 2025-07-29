@@ -1,6 +1,8 @@
 ﻿namespace MyAlgorithm
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using MyDataStructure;
     internal class TopK<T> where T : IComparable
@@ -72,7 +74,6 @@
         /*
          * Summary：
          * 用堆排序可以获取前k大的元素，如果目标是获取第k大的元素，时间上不如快速选择。
-         * 当数组够大的时候无需对原数组分组直接排序
          * 建堆复杂度O(m),遍历n长度数组复杂度O(m)，每次对根节点堆化复杂度O(logm)
          * 总时间复杂度为O(m+nlogm)
          * 需要额外一个数组存放小顶堆，空间复杂度为O(m)
@@ -82,12 +83,44 @@
             int len = arr.Length;
             T[] heapArr = arr.Take(k).ToArray();//取前k个字符
             MyHeap<T> heap = new MyHeap<T>(heapArr, false);//小顶堆
+            if (len <= k)
+                return heap.GetArray(isAsc);
             for (int i = k; i < len; i++)
             {
                 T root = heap.Peek();
                 //当前元素大于最小堆的根，则替换并重新对根节点堆化
                 if (root != null && root.CompareTo(arr[i]) < 0)
                     heap.HeapifyRoot(arr[i]);
+            }
+            return heap.GetArray(isAsc);
+        }
+        /// <summary>面对大量数据时使用流读取</summary>
+        public static T[] HeapSelect(StreamReader reader, int k, bool isAsc = true)
+        {
+            MyHeap<T> heap = null;
+            string line;
+            int size = 2 * k;//每次分组的大小
+            while (true)
+            {
+
+                List<T> list = new List<T>();
+                while ((line = reader.ReadLine()) != null && list.Count < size)
+                {
+                    //TODO:在这里做好对数据的处理添加进list中。
+
+                }
+                T[] arr = list.ToArray();
+                if (heap == null)
+                    heap = new MyHeap<T>(arr, false);//小顶堆
+                for (int i = k; i < arr.Length; i++)
+                {
+                    T root = heap.Peek();
+                    //当前元素大于最小堆的根，则替换并重新对根节点堆化
+                    if (root != null && root.CompareTo(arr[i]) < 0)
+                        heap.HeapifyRoot(arr[i]);
+                }
+                if (line == null)
+                    break;
             }
             return heap.GetArray(isAsc);
         }
