@@ -55,6 +55,7 @@ namespace Singleton
     {
         private static T m_Instance;
         private static readonly string m_Lock = "lock";
+        private static readonly List<string> singletons = new List<string>();
         public static T i
         {
             get
@@ -65,16 +66,17 @@ namespace Singleton
                         if (m_Instance == null)
                         {
                             var name = $"[{typeof(T)}]";
-                            var flag = Global.Singletons.Contains(name);//查询是否注册过
+                            var flag = singletons.Contains(name);//查询是否注册过
                             if (!flag)
                             {
                                 m_Instance = new GameObject(name, typeof(T)).GetComponent<T>();
-                                Global.Singletons.Add(name);
+                                singletons.Add(name);
                             }
                         }
                     }
                 return m_Instance;
             }
+        }
         public virtual void Init() { }
         protected virtual void OnDestroy()
         {
